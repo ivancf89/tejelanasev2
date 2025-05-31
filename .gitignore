@@ -1,0 +1,50 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+# Node modules
+node_modules/
+
+# Archivos de build
+dist/
+build/
+
+# Variables de entorno
+.env
+.env.local
+.env.*.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+*.code-workspace
+git add .
+git commit -m "chore: inicializar proyecto con Vite y estructura inicial"
