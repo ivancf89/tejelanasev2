@@ -1,42 +1,33 @@
-// src/components/ScrollToTop.jsx
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-function ScrollToTop() {
-  const [showBtn, setShowBtn] = useState(false);
+export default function ScrollToTop() {
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 300) setShowBtn(true);
-      else setShowBtn(false);
-    };
+    const handleScroll = () => setVisible(window.scrollY > 300);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  return (
-    <>
-      {showBtn && (
-        <button
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          style={{
-            position: 'fixed',
-            bottom: '2rem',
-            right: '2rem',
-            padding: '0.5rem 1rem',
-            backgroundColor: '#007bff',
-            color: '#fff',
-            border: 'none',
-            borderRadius: '50%',
-            cursor: 'pointer',
-            fontSize: '1.2rem',
-          }}
-          aria-label="Volver arriba"
-        >
-          ↑
-        </button>
-      )}
-    </>
-  );
+  return visible ? (
+    <button
+      style={{
+        position: 'fixed',
+        bottom: 20,
+        right: 20,
+        borderRadius: '50%',
+        padding: '1rem',
+        background: '#1976d2',
+        color: 'white',
+        border: 'none',
+        cursor: 'pointer',
+        zIndex: 1000,
+      }}
+      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+      aria-label="Volver arriba"
+    >
+      ↑
+    </button>
+  ) : null;
 }
 
-export default ScrollToTop;
