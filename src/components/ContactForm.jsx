@@ -4,6 +4,13 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import ReCAPTCHA from 'react-google-recaptcha';
+import {
+  isNotEmpty,
+  isValidName,
+  isEmail,
+  isValidMessage,
+  isCaptchaValid
+} from '../utils/validations';
 
 function ContactForm() {
   const [form, setForm] = useState({ nombre: '', correo: '', mensaje: '' });
@@ -17,11 +24,28 @@ function ContactForm() {
 
   const validate = () => {
     const newErrors = {};
-    if (!form.nombre) newErrors.nombre = 'El nombre es requerido';
-    if (!form.correo) newErrors.correo = 'El correo es requerido';
-    else if (!/\S+@\S+\.\S+/.test(form.correo)) newErrors.correo = 'Correo inválido';
-    if (!form.mensaje) newErrors.mensaje = 'El mensaje es requerido';
-    if (!captcha) newErrors.captcha = 'Por favor verifica que no eres un robot';
+    if (!isNotEmpty(form.nombre)) {
+      newErrors.nombre = 'El nombre es requerido';
+    } else if (!isValidName(form.nombre)) {
+      newErrors.nombre = 'El nombre solo debe contener letras y espacios';
+    }
+
+    if (!isNotEmpty(form.correo)) {
+      newErrors.correo = 'El correo es requerido';
+    } else if (!isEmail(form.correo)) {
+      newErrors.correo = 'Correo inválido';
+    }
+
+    if (!isNotEmpty(form.mensaje)) {
+      newErrors.mensaje = 'El mensaje es requerido';
+    } else if (!isValidMessage(form.mensaje, 10)) {
+      newErrors.mensaje = 'El mensaje debe tener al menos 10 caracteres';
+    }
+
+    if (!isCaptchaValid(captcha)) {
+      newErrors.captcha = 'Por favor verifica que no eres un robot';
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
