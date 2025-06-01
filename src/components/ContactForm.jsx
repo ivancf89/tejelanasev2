@@ -1,19 +1,29 @@
 import React, { useState } from 'react';
 import { Box, Button, TextField, Typography, Paper } from '@mui/material';
 import ReCAPTCHA from 'react-google-recaptcha';
+import {
+  isNotEmpty,
+  isValidName,
+  isEmail,
+  isValidMessage,
+  isCaptchaValid
+} from '../utils/validations';
 
 function ContactForm() {
   const [form, setForm] = useState({ nombre: '', correo: '', mensaje: '' });
   const [errors, setErrors] = useState({});
   const [recaptcha, setRecaptcha] = useState(null);
 
-  // Validación básica de campos
+  // Validación de campos usando funciones externas
   const validate = () => {
     let err = {};
-    if (!form.nombre) err.nombre = "El nombre es obligatorio";
-    if (!form.correo) err.correo = "El correo es obligatorio";
-    else if (!/\S+@\S+\.\S+/.test(form.correo)) err.correo = "Correo inválido";
-    if (!form.mensaje) err.mensaje = "El mensaje es obligatorio";
+    if (!isNotEmpty(form.nombre)) err.nombre = "El nombre es obligatorio";
+    else if (!isValidName(form.nombre)) err.nombre = "El nombre solo debe contener letras y espacios";
+    if (!isNotEmpty(form.correo)) err.correo = "El correo es obligatorio";
+    else if (!isEmail(form.correo)) err.correo = "Correo inválido";
+    if (!isNotEmpty(form.mensaje)) err.mensaje = "El mensaje es obligatorio";
+    else if (!isValidMessage(form.mensaje, 10)) err.mensaje = "El mensaje debe tener al menos 10 caracteres";
+    if (!isCaptchaValid(recaptcha)) err.recaptcha = "Por favor, verifica el reCAPTCHA";
     setErrors(err);
     return Object.keys(err).length === 0;
   };
@@ -22,10 +32,6 @@ function ContactForm() {
 
   const handleSubmit = e => {
     e.preventDefault();
-    if (!recaptcha) {
-      setErrors({ ...errors, recaptcha: "Por favor, verifica el reCAPTCHA" });
-      return;
-    }
     if (validate()) {
       alert('Mensaje enviado correctamente (simulado)');
       setForm({ nombre: '', correo: '', mensaje: '' });
@@ -89,7 +95,7 @@ function ContactForm() {
         />
         <Box sx={{ my: 2, display: 'flex', justifyContent: 'center' }}>
           <ReCAPTCHA
-            sitekey="6LdSfFIrAAAAAOv17NvJ5dBC86knRKRD5ZX46ocb" // Cambia esto por tu clave real
+            sitekey="6LdSfFIrAAAAAOv17NvJ5dBC86knRKRD5ZX46ocb"
             onChange={value => {
               setRecaptcha(value);
               setErrors({ ...errors, recaptcha: undefined });

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Container, Typography, Box, CircularProgress } from '@mui/material';
 import api from '../services/api';
 import ServiceCard from '../components/ServiceCard';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 function ProductsPage() {
   const [products, setProducts] = useState([]);
@@ -10,6 +12,7 @@ function ProductsPage() {
   const [error, setError] = useState('');
 
   useEffect(() => {
+    AOS.init({ duration: 800, once: false }); // Cambia once: true a once: false
     api.get('products-services/')
       .then(res => {
         setProducts(res.data.data.productos);
@@ -24,7 +27,7 @@ function ProductsPage() {
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 6, textAlign: 'center' }}>
-      <Typography variant="h3" component="h1" gutterBottom>
+      <Typography variant="h3" component="h1" gutterBottom data-aos="fade-down">
         Productos y Servicios
       </Typography>
 
@@ -48,7 +51,7 @@ function ProductsPage() {
 
       {!loading && !error && products.length > 0 && (
         <>
-          <Typography variant="h5" sx={{ mb: 2 }}>
+          <Typography variant="h5" sx={{ mb: 2 }} data-aos="fade-right">
             Productos
           </Typography>
           <Box
@@ -61,18 +64,19 @@ function ProductsPage() {
             }}
           >
             {products.map(product => (
-              <ServiceCard
-                key={product.id}
-                imagen={product.imgs[0]}
-                titulo={product.nombre}
-                descripcion={product.descripcion}
-              />
+              <div data-aos="fade-up" key={product.id}>
+                <ServiceCard
+                  imagen={product.imgs[0]}
+                  titulo={product.nombre}
+                  descripcion={product.descripcion}
+                />
+              </div>
             ))}
           </Box>
 
           {services.length > 0 && (
             <>
-              <Typography variant="h5" sx={{ mb: 2 }}>
+              <Typography variant="h5" sx={{ mb: 2 }} data-aos="fade-right">
                 Servicios
               </Typography>
               <Box
@@ -84,12 +88,13 @@ function ProductsPage() {
                 }}
               >
                 {services.map(service => (
-                  <ServiceCard
-                    key={service.id}
-                    imagen={service.imgs[0]}
-                    titulo={service.nombre}
-                    descripcion={`Ubicación: ${service.ubicacion} | Fecha: ${service.fecha} | Cupos: ${service.cupos}`}
-                  />
+                  <div data-aos="fade-up" key={service.id}>
+                    <ServiceCard
+                      imagen={service.imgs[0]}
+                      titulo={service.nombre}
+                      descripcion={`Ubicación: ${service.ubicacion} | Fecha: ${service.fecha} | Cupos: ${service.cupos}`}
+                    />
+                  </div>
                 ))}
               </Box>
             </>

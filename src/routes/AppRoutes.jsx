@@ -1,26 +1,26 @@
 // src/AppRoutes.jsx
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { Routes, Route } from 'react-router-dom';
 
-import HomePage from '../pages/HomePage';
-import AboutPage from '../pages/AboutPage';
-import ProductsPage from '../pages/ProductsPage';
-import FaqPage from '../pages/FaqPage';
-import ContactForm from '../components/Contactform';
+const HomePage = lazy(() => import('../pages/HomePage'));
+const AboutPage = lazy(() => import('../pages/AboutPage'));
+const ProductsPage = lazy(() => import('../pages/ProductsPage'));
+const FaqPage = lazy(() => import('../pages/FaqPage'));
+const ContactForm = lazy(() => import('../components/ContactForm'));
 
 
 function AppRoutes() {
-    return (
-    <Routes>
+  return (
+    <Suspense fallback={<div>Cargando...</div>}>
+      <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/products" element={<ProductsPage />} />
         <Route path="/faq" element={<FaqPage />} />
         <Route path="/contact" element={<ContactForm />} />
-      {/* Ruta 404 opcional */}
-      {/* <Route path="*" element={<NotFoundPage />} /> */}
-    </Routes>
-    );
+      </Routes>
+    </Suspense>
+  );
 }
 
 export default AppRoutes;
