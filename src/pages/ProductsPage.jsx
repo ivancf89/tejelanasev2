@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Typography, Box, CircularProgress, Snackbar, Alert } from '@mui/material';
+import { Container, Typography, Box, CircularProgress } from '@mui/material';
 import api from '../services/api';
 import ServiceCard from '../components/ServiceCard';
-import ProductCard from '../components/ProductCard';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
-function ProductsPage({ cart, setCart }) {
+function ProductsPage() {
   const [products, setProducts] = useState([]);
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [snackOpen, setSnackOpen] = useState(false);
 
   useEffect(() => {
+    AOS.init({ duration: 800, once: false });
     api.get('products-services/')
       .then(res => {
         setProducts(res.data.data.productos);
@@ -24,25 +25,9 @@ function ProductsPage({ cart, setCart }) {
       });
   }, []);
 
-  // Función para agregar al carrito
-  const handleAddToCart = (item) => {
-    setCart(prev => [...prev, item]);
-    setSnackOpen(true);
-  };
-
   return (
-    <Container maxWidth="md"
-      sx={{
-        backgroundColor: '#fff',
-        borderRadius: 3,
-        boxShadow: 3,
-        py: { xs: 4, md: 6 },
-        px: { xs: 2, md: 6 },
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-      }}>
-      <Typography variant="h3" component="h1" gutterBottom>
+    <Container maxWidth="lg" sx={{ mt: 4, mb: 6, textAlign: 'center' }}>
+      <Typography variant="h3" component="h1" gutterBottom data-aos="fade-down">
         Productos y Servicios
       </Typography>
 
@@ -66,7 +51,7 @@ function ProductsPage({ cart, setCart }) {
 
       {!loading && !error && products.length > 0 && (
         <>
-          <Typography variant="h5" sx={{ mb: 2 }}>
+          <Typography variant="h5" sx={{ mb: 2 }} data-aos="fade-right">
             Productos
           </Typography>
           <Box
@@ -79,17 +64,20 @@ function ProductsPage({ cart, setCart }) {
             }}
           >
             {products.map(product => (
-              <ProductCard
-                key={product.id}
-                producto={product}
-                onAddToCart={handleAddToCart}
-              />
+              <div data-aos="fade-up" key={product.id}>
+                <ServiceCard
+                  imagen={product.imgs[0]}
+                  titulo={product.nombre}
+                  descripcion={product.descripcion}
+                  // Asegúrate que ServiceCard use loading="lazy" en la imagen interna
+                />
+              </div>
             ))}
           </Box>
 
           {services.length > 0 && (
             <>
-              <Typography variant="h5" sx={{ mb: 2 }}>
+              <Typography variant="h5" sx={{ mb: 2 }} data-aos="fade-right">
                 Servicios
               </Typography>
               <Box
@@ -101,40 +89,19 @@ function ProductsPage({ cart, setCart }) {
                 }}
               >
                 {services.map(service => (
-                  <ServiceCard
-                    key={service.id}
-                    imagen={service.imgs[0]}
-                    titulo={service.nombre}
-                    descripcion={`Ubicación: ${service.ubicacion} | Fecha: ${service.fecha} | Cupos: ${service.cupos}`}
-                    onAddToCart={() => handleAddToCart(service)}
-                    showButton
-                  />
+                  <div data-aos="fade-up" key={service.id}>
+                    <ServiceCard
+                      imagen={service.imgs[0]}
+                      titulo={service.nombre}
+                      descripcion={`Ubicación: ${service.ubicacion} | Fecha: ${service.fecha} | Cupos: ${service.cupos}`}
+                      // Asegúrate que ServiceCard use loading="lazy" en la imagen interna
+                    />
+                  </div>
                 ))}
               </Box>
             </>
           )}
         </>
-      )}
-
-      {/* Snackbar para feedback */}
-      <Snackbar open={snackOpen} autoHideDuration={2000} onClose={() => setSnackOpen(false)}>
-        <Alert onClose={() => setSnackOpen(false)} severity="success" sx={{ width: '100%' }}>
-          Producto agregado al carrito
-        </Alert>
-      </Snackbar>
-
-      {/* Resumen simple del carrito */}
-      {cart.length > 0 && (
-        <Box sx={{ mt: 4, width: '100%' }}>
-          <Typography variant="h6">Carrito:</Typography>
-          <ul>
-            {cart.map((item, idx) => (
-              <li key={idx}>
-                {item.nombre || item.titulo} {item.talla ? `- Talla: ${item.talla}` : ''} {item.color ? `- Color: ${item.color}` : ''}
-              </li>
-            ))}
-          </ul>
-        </Box>
       )}
     </Container>
   );

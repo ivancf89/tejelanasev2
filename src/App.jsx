@@ -7,10 +7,14 @@ import ScrollToTop from './components/ScrollToTop';
 function App() {
   const [cart, setCart] = useState([]);
 
-  return (
-    <div>
+return (
+    <div style={{
+      minHeight: '100vh',
+      display: 'flex',
+      flexDirection: 'column'
+    }}>
       <Navbar />
-      <main>
+      <main style={{ flex: 1 }}>
         <AppRoutes cart={cart} setCart={setCart} />
       </main>
       <Footer />

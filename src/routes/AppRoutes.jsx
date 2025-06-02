@@ -1,23 +1,24 @@
-// src/AppRoutes.jsx
-import React from 'react';  
+import React, { Suspense, lazy } from 'react';
 import { Routes, Route } from 'react-router-dom';
 
-import HomePage from '../pages/HomePage';
-import AboutPage from '../pages/AboutPage';
-import ProductsPage from '../pages/ProductsPage';
-import FaqPage from '../pages/FaqPage';
-import ContactForm from '../components/Contactform';
+// Lazy load de las páginas principales
+const HomePage = lazy(() => import('../pages/HomePage'));
+const AboutPage = lazy(() => import('../pages/AboutPage'));
+const ProductsPage = lazy(() => import('../pages/ProductsPage'));
+const FaqPage = lazy(() => import('../pages/FaqPage'));
+const ContactForm = lazy(() => import('../components/Contactform')); // Asegúrate que el nombre y ruta coincidan
 
-
-function AppRoutes({ cart, setCart }) {
+function AppRoutes() {
   return (
-    <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/about" element={<AboutPage />} />
-      <Route path="/products" element={<ProductsPage cart={cart} setCart={setCart} />} />
-      <Route path="/faq" element={<FaqPage />} />
-      <Route path="/contact" element={<ContactForm cart={cart} setCart={setCart} />} />
-    </Routes>
+    <Suspense fallback={<div>Cargando...</div>}>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/products" element={<ProductsPage />} />
+        <Route path="/faq" element={<FaqPage />} />
+        <Route path="/contact" element={<ContactForm />} />
+      </Routes>
+    </Suspense>
   );
 }
 

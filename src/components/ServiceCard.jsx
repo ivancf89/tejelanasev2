@@ -8,17 +8,31 @@ function ServiceCard({ imagen, titulo, descripcion, onAddToCart, showButton }) {
   const imgSrc = imagen && imagen.trim() !== '' ? imagen : PLACEHOLDER_IMG;
 
   return (
-    <Card sx={{ width: 320, display: 'flex', flexDirection: 'column', alignItems: 'center', p: 2 }}>
+    <Card
+      sx={{
+        width: 320,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        p: 2,
+      }}
+      data-aos="zoom-in" // Puedes cambiar el efecto o quitarlo si lo manejas desde el padre
+    >
       <CardMedia
         component="img"
         height="180"
         image={imgSrc}
         alt={titulo}
+        loading="lazy" // <-- Lazy loading nativo aquí
         sx={{ objectFit: 'contain', mb: 2 }}
       />
       <CardContent sx={{ width: '100%' }}>
-        <Typography variant="h6" gutterBottom>{titulo}</Typography>
-        <Typography variant="body2" sx={{ mb: 2 }}>{descripcion}</Typography>
+        <Typography variant="h6" gutterBottom>
+          {titulo}
+        </Typography>
+        <Typography variant="body2" sx={{ mb: 2 }}>
+          {descripcion}
+        </Typography>
         {showButton && (
           <Button
             variant="contained"

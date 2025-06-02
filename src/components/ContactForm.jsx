@@ -1,45 +1,42 @@
 import React, { useState } from 'react';
-import { Box, Button, TextField, Typography, Paper, IconButton } from '@mui/material';
+import { Box, Button, TextField, Typography, Paper } from '@mui/material';
 import ReCAPTCHA from 'react-google-recaptcha';
-import DeleteIcon from '@mui/icons-material/Delete';
+import {
+  isNotEmpty,
+  isValidName,
+  isEmail,
+  isValidMessage,
+  isCaptchaValid
+} from '../utils/Validations';
 
-function ContactForm({ cart, setCart }) {
+function ContactForm() {
   const [form, setForm] = useState({ nombre: '', correo: '', mensaje: '' });
   const [errors, setErrors] = useState({});
   const [recaptcha, setRecaptcha] = useState(null);
 
-  // Validación básica de campos
+  // Validación de campos usando funciones externas
   const validate = () => {
     let err = {};
-    if (!form.nombre) err.nombre = "El nombre es obligatorio";
-    if (!form.correo) err.correo = "El correo es obligatorio";
-    else if (!/\S+@\S+\.\S+/.test(form.correo)) err.correo = "Correo inválido";
-    if (!form.mensaje) err.mensaje = "El mensaje es obligatorio";
+    if (!isNotEmpty(form.nombre)) err.nombre = "El nombre es obligatorio";
+    else if (!isValidName(form.nombre)) err.nombre = "El nombre solo debe contener letras y espacios";
+    if (!isNotEmpty(form.correo)) err.correo = "El correo es obligatorio";
+    else if (!isEmail(form.correo)) err.correo = "Correo inválido";
+    if (!isNotEmpty(form.mensaje)) err.mensaje = "El mensaje es obligatorio";
+    else if (!isValidMessage(form.mensaje, 10)) err.mensaje = "El mensaje debe tener al menos 10 caracteres";
+    if (!isCaptchaValid(recaptcha)) err.recaptcha = "Por favor, verifica el reCAPTCHA";
     setErrors(err);
     return Object.keys(err).length === 0;
   };
 
   const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleRemove = idx => {
-    setCart(cart.filter((_, i) => i !== idx));
-  };
-
   const handleSubmit = e => {
     e.preventDefault();
-    if (!recaptcha) {
-      setErrors({ ...errors, recaptcha: "Por favor, verifica el reCAPTCHA" });
-      return;
-    }
     if (validate()) {
-      // Aquí puedes enviar el carrito junto con el formulario
-      alert('Mensaje enviado correctamente (simulado)\nProductos/Servicios seleccionados:\n' +
-        cart.map(item => (item.nombre || item.titulo) + (item.talla ? ` - Talla: ${item.talla}` : '') + (item.color ? ` - Color: ${item.color}` : '')).join('\n')
-      );
+      alert('Mensaje enviado correctamente (simulado)');
       setForm({ nombre: '', correo: '', mensaje: '' });
       setErrors({});
       setRecaptcha(null);
-      setCart([]); // Limpia el carrito después de enviar
     }
   };
 
@@ -60,28 +57,6 @@ function ContactForm({ cart, setCart }) {
       <Typography id="contact-form-title" variant="h5" component="h2" mb={2} align="center">
         Contacto
       </Typography>
-
-      {/* Carrito */}
-      {cart && cart.length > 0 && (
-        <Box sx={{ mb: 2 }}>
-          <Typography variant="subtitle1" sx={{ mb: 1 }}>Carrito:</Typography>
-          <ul style={{ paddingLeft: 0, listStyle: 'none' }}>
-            {cart.map((item, idx) => (
-              <li key={idx} style={{ display: 'flex', alignItems: 'center', marginBottom: 4 }}>
-                <span style={{ flex: 1 }}>
-                  {item.nombre || item.titulo}
-                  {item.talla ? ` - Talla: ${item.talla}` : ''}
-                  {item.color ? ` - Color: ${item.color}` : ''}
-                </span>
-                <IconButton aria-label="Quitar" onClick={() => handleRemove(idx)} size="small">
-                  <DeleteIcon fontSize="small" />
-                </IconButton>
-              </li>
-            ))}
-          </ul>
-        </Box>
-      )}
-
       <form onSubmit={handleSubmit} noValidate>
         <TextField
           fullWidth
