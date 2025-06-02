@@ -1,12 +1,60 @@
-// src/pages/AboutPage.jsx
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { Container, Typography, CircularProgress, Box } from '@mui/material';
+import api from '../services/api';
 
 function AboutPage() {
+  const [info, setInfo] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    api.get('about-us/')
+      .then(res => {
+        setInfo(res.data.data);
+        setLoading(false);
+      })
+      .catch(() => {
+        setError('No se pudo cargar la información.');
+        setLoading(false);
+      });
+  }, []);
+
   return (
-    <div style={{ textAlign: 'center', marginTop: '2rem' }}>
-      <h1>Quiénes Somos</h1>
-      <p>Aquí irá la información sobre Tejelanas Vivi.</p>
-    </div>
+<Container
+        maxWidth="md"
+        sx={{
+          backgroundColor: '#fff',
+          borderRadius: 3,
+          boxShadow: 3,
+          py: { xs: 4, md: 6 },
+          px: { xs: 2, md: 6 },
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+    >
+      <Typography variant="h3" component="h1" gutterBottom>
+        Quiénes Somos
+      </Typography>
+
+      {loading && (
+        <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
+          <CircularProgress />
+        </Box>
+      )}
+
+      {error && (
+        <Typography color="error" variant="body1" sx={{ my: 4 }}>
+          {error}
+        </Typography>
+      )}
+
+      {!loading && !error && (
+        <Typography variant="body1" sx={{ fontSize: { xs: '1rem', sm: '1.125rem' }, lineHeight: 1.6 }}>
+          {info}
+        </Typography>
+      )}
+    </Container>
   );
 }
 
