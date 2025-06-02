@@ -1,5 +1,5 @@
 // src/AppRoutes.jsx
-import React from 'react';
+import React from 'react';  
 import { Routes, Route } from 'react-router-dom';
 
 import HomePage from '../pages/HomePage';
@@ -9,18 +9,16 @@ import FaqPage from '../pages/FaqPage';
 import ContactForm from '../components/Contactform';
 
 
-function AppRoutes() {
-    return (
+function AppRoutes({ cart, setCart }) {
+  return (
     <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/about" element={<AboutPage />} />
-        <Route path="/products" element={<ProductsPage />} />
-        <Route path="/faq" element={<FaqPage />} />
-        <Route path="/contact" element={<ContactForm />} />
-      {/* Ruta 404 opcional */}
-      {/* <Route path="*" element={<NotFoundPage />} /> */}
+      <Route path="/" element={<HomePage />} />
+      <Route path="/about" element={<AboutPage />} />
+      <Route path="/products" element={<ProductsPage cart={cart} setCart={setCart} />} />
+      <Route path="/faq" element={<FaqPage />} />
+      <Route path="/contact" element={<ContactForm cart={cart} setCart={setCart} />} />
     </Routes>
-    );
+  );
 }
 
 export default AppRoutes;

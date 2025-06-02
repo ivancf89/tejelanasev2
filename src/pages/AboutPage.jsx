@@ -20,7 +20,19 @@ function AboutPage() {
   }, []);
 
   return (
-    <Container maxWidth="md" sx={{ mt: 4, mb: 6, textAlign: 'center' }}>
+<Container
+        maxWidth="md"
+        sx={{
+          backgroundColor: '#fff',
+          borderRadius: 3,
+          boxShadow: 3,
+          py: { xs: 4, md: 6 },
+          px: { xs: 2, md: 6 },
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+    >
       <Typography variant="h3" component="h1" gutterBottom>
         Quiénes Somos
       </Typography>

@@ -1,28 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import AppRoutes from './routes/AppRoutes.jsx';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop';
 
-const appStyle = {
-  display: 'flex',
-  flexDirection: 'column',
-  minHeight: '100vh',
-};
-
-const mainContainerStyle = {
-  flex: 1,
-  paddingTop: '4.5rem',
-  background: '#f8f9fa',
-  boxSizing: 'border-box',
-};
-
 function App() {
+  const [cart, setCart] = useState([]);
+
   return (
-    <div style={appStyle}>
+    <div>
       <Navbar />
-      <main style={mainContainerStyle}>
-        <AppRoutes />
+      <main>
+        <AppRoutes cart={cart} setCart={setCart} />
       </main>
       <Footer />
       <ScrollToTop />

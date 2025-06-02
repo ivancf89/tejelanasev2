@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Box, Button, TextField, Typography, Paper } from '@mui/material';
+import { Box, Button, TextField, Typography, Paper, IconButton } from '@mui/material';
 import ReCAPTCHA from 'react-google-recaptcha';
+import DeleteIcon from '@mui/icons-material/Delete';
 
-function ContactForm() {
+function ContactForm({ cart, setCart }) {
   const [form, setForm] = useState({ nombre: '', correo: '', mensaje: '' });
   const [errors, setErrors] = useState({});
   const [recaptcha, setRecaptcha] = useState(null);
@@ -20,6 +21,10 @@ function ContactForm() {
 
   const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
 
+  const handleRemove = idx => {
+    setCart(cart.filter((_, i) => i !== idx));
+  };
+
   const handleSubmit = e => {
     e.preventDefault();
     if (!recaptcha) {
@@ -27,10 +32,14 @@ function ContactForm() {
       return;
     }
     if (validate()) {
-      alert('Mensaje enviado correctamente (simulado)');
+      // Aquí puedes enviar el carrito junto con el formulario
+      alert('Mensaje enviado correctamente (simulado)\nProductos/Servicios seleccionados:\n' +
+        cart.map(item => (item.nombre || item.titulo) + (item.talla ? ` - Talla: ${item.talla}` : '') + (item.color ? ` - Color: ${item.color}` : '')).join('\n')
+      );
       setForm({ nombre: '', correo: '', mensaje: '' });
       setErrors({});
       setRecaptcha(null);
+      setCart([]); // Limpia el carrito después de enviar
     }
   };
 
@@ -51,6 +60,28 @@ function ContactForm() {
       <Typography id="contact-form-title" variant="h5" component="h2" mb={2} align="center">
         Contacto
       </Typography>
+
+      {/* Carrito */}
+      {cart && cart.length > 0 && (
+        <Box sx={{ mb: 2 }}>
+          <Typography variant="subtitle1" sx={{ mb: 1 }}>Carrito:</Typography>
+          <ul style={{ paddingLeft: 0, listStyle: 'none' }}>
+            {cart.map((item, idx) => (
+              <li key={idx} style={{ display: 'flex', alignItems: 'center', marginBottom: 4 }}>
+                <span style={{ flex: 1 }}>
+                  {item.nombre || item.titulo}
+                  {item.talla ? ` - Talla: ${item.talla}` : ''}
+                  {item.color ? ` - Color: ${item.color}` : ''}
+                </span>
+                <IconButton aria-label="Quitar" onClick={() => handleRemove(idx)} size="small">
+                  <DeleteIcon fontSize="small" />
+                </IconButton>
+              </li>
+            ))}
+          </ul>
+        </Box>
+      )}
+
       <form onSubmit={handleSubmit} noValidate>
         <TextField
           fullWidth
@@ -89,7 +120,7 @@ function ContactForm() {
         />
         <Box sx={{ my: 2, display: 'flex', justifyContent: 'center' }}>
           <ReCAPTCHA
-            sitekey="6LdSfFIrAAAAAOv17NvJ5dBC86knRKRD5ZX46ocb" // Cambia esto por tu clave real
+            sitekey="6LdSfFIrAAAAAOv17NvJ5dBC86knRKRD5ZX46ocb"
             onChange={value => {
               setRecaptcha(value);
               setErrors({ ...errors, recaptcha: undefined });

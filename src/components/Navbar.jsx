@@ -1,14 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import {
-  AppBar,
-  Toolbar,
-  IconButton,
-  Typography,
-  Menu,
-  MenuItem,
-  Box,
-  Button,
+import {AppBar,Toolbar,IconButton,Typography,Menu,MenuItem,Box,Button,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 
@@ -40,7 +32,7 @@ function Navbar() {
           Tejelanas Vivi
         </Typography>
 
-        {/* Menú para pantallas grandes */}
+        {/* Menú nomral*/}
         <Box sx={{ display: { xs: 'none', sm: 'flex' }, gap: 2 }}>
           {navItems.map(({ label, path }) => (
             <Button
@@ -62,7 +54,7 @@ function Navbar() {
           ))}
         </Box>
 
-        {/* Menú hamburguesa para pantallas pequeñas */}
+        {/* Menú hamburguesas */}
         <Box sx={{ display: { xs: 'flex', sm: 'none' } }}>
           <IconButton
             size="large"
